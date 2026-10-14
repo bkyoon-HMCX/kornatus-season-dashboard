@@ -71,6 +71,13 @@ td .tag{display:inline-block;font-size:11px;padding:1px 6px;border-radius:4px;ba
 .cal .ev{border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .cal .ev b{font-size:13.5px}
 .cal .ev .d{font-family:var(--f-num);font-size:12px;color:var(--ink-2)}
+.calc{border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:grid;gap:8px}
+.calc-head{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.calc-head b{font-size:13.5px}
+.calc-in{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:13px;color:var(--ink-2)}
+.calc-in input{width:64px;margin:0 4px;font:inherit;font-family:var(--f-num);padding:3px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);text-align:right}
+#calcOut{margin:0;font-size:13px;line-height:1.7;color:var(--ink-2);text-wrap:pretty}
+#calcOut b{color:var(--ink);font-family:var(--f-num);font-weight:600}
 .rule{border-left:3px solid var(--s-rfn);background:var(--bg);border-radius:0 8px 8px 0;padding:10px 14px;display:grid;gap:6px}
 .rule p{margin:0;font-size:13px;line-height:1.65;color:var(--ink-2);text-wrap:pretty}
 .rule b{color:var(--ink)}
@@ -186,10 +193,18 @@ details summary{cursor:pointer;font-weight:600;font-size:14px}
   </section>
 
   <section class="panel">
-    <div class="panel-head"><h2>다가오는 시즌 · 혼용 차량 대응</h2><span class="hint">2026 Q4 – 2027 설 · 얼리버드 오픈 기한 = 연휴 시작 D-<span id="leadW"></span>주(가정)</span></div>
+    <div class="panel-head"><h2>다가오는 시즌 · 혼용 차량 대응</h2><span class="hint">2026 Q4 – 2027 설</span></div>
     <div class="rule">
-      <p><b>운영 원칙</b> 명절 주에는 혼용 차량 <b>왕복 매출이 평시의 2배 이상</b>(설 +117%, 추석 +149%)으로 뛰고, 편도(리턴프리)는 −20% 안팎으로 줄어듭니다(심야 −34~−37%). 혼용 차량은 연휴 기간을 <b>왕복 얼리버드</b>로 미리 팔아 두는 편이 매출에 유리합니다. 리턴프리로 나간 차가 연휴 중 다른 차고지에 머물면 재수요가 없어 <b>탁송 회수 비용</b>까지 생기므로, 왕복 예약은 원 차고지 복귀 측면에서도 낫습니다.</p>
+      <p><b>운영 원칙</b> 명절 주에는 혼용 차량 <b>왕복 매출이 평시의 2배 이상</b>(설 +117%, 추석 +149%)으로 뛰고, 편도(리턴프리)는 −20% 안팎으로 줄어듭니다(심야 −34~−37%). 혼용 차량은 연휴 기간을 <b>왕복 얼리버드</b>로 미리 팔아 두는 편이 매출에 유리합니다. 단, 왕복 예약이 잡힌 차량은 그때부터 편도로 쓸 수 없으므로 <b>오픈 시점과 물량을 적정 수준으로</b> 정해야 합니다. 리턴프리로 나간 차가 연휴 중 다른 차고지에 머물면 재수요가 없어 <b>탁송 회수 비용</b>까지 생기므로, 왕복 예약은 원 차고지 복귀 측면에서도 낫습니다.</p>
       <p class="hint">이용 주 기준으로 보면 직전 주 왕복 매출은 평시 수준(설 0%, 추석 +14%)이고 증가는 연휴 주에 몰립니다. "직전 수요 증가"는 예약이 들어오는 시점의 이야기라, 왕복 예약 리드타임(예약일→이용일) 데이터가 있으면 얼리버드 기한을 실제 값으로 맞출 수 있습니다.</p>
+    </div>
+    <div class="calc">
+      <div class="calc-head"><b>얼리버드 기간 정하기</b><span class="hint">왕복 예약이 잡힌 차량은 이용일까지 편도(리턴프리)로 쓸 수 없습니다</span></div>
+      <div class="calc-in">
+        <label>오픈 시점 연휴 D-<input id="inW" type="number" min="1" max="8" step="1" value="2" inputmode="numeric">주</label>
+        <label>얼리버드로 잡힐 차량 <input id="inN" type="number" min="0" max="600" step="10" value="100" inputmode="numeric">대</label>
+      </div>
+      <p id="calcOut"></p>
     </div>
     <div class="cal" id="cal"></div>
   </section>
@@ -268,17 +283,17 @@ const EVENTS25=[
   {id:"xmas",name:"성탄절",s:"2025-12-25",e:"2025-12-25",kind:"minor"},
   {id:"ny",name:"신정",s:"2026-01-01",e:"2026-01-01",kind:"minor"}
 ];
-const LEAD_WEEKS=4; /* 얼리버드 오픈 기한: 연휴 시작 D-4주 (가정 — 왕복 예약 리드타임 데이터로 조정) */
+let LEAD_WEEKS=2, EB_CARS=100, HYK=null; /* 얼리버드 오픈 시점(D-주)·차량 수: 화면 입력값. HYK = 혼용 차량 평시 지표(render에서 계산) */
 const UPCOMING=[
   {name:"연말 송년회 시즌",start:"2026-12-01",end:"2026-12-24",d:"12/1 – 12/24",
    impact:"작년 12월 1–3주 리턴프리 심야 −12%·−4%·−2%(첫 주는 첫눈·한파), 낮은 평시 수준. 대리 성수기지만 심야가 늘지는 않았습니다.",
    action:"리턴프리 평시 운영. 한파·대설 예보 주는 심야 −10% 안팎을 감안해 단기 조정.",due:"주간 날씨 예보 확인 (매주)"},
   {name:"크리스마스 · 신정",start:"2026-12-24",end:"2027-01-01",d:"12/25(금) · 1/1(금)",
    impact:"작년 성탄·신정 주 리턴프리 심야 −25%·−27%, 낮 −7%·−8%. 두 주 연속 약세(작년 왕복 주간 데이터는 없음).",
-   action:"두 주를 왕복 얼리버드로 선판매. 연휴 중 다른 차고지에 남는 혼용 차량은 연휴 뒤 탁송 회수 계획을 미리 잡기.",early:true},
+   action:"연휴 두 주를 왕복 얼리버드로 선판매하되 오픈은 짧게, 물량은 상한을 두기. 연휴 중 다른 차고지에 남는 차량은 탁송 회수 계획을 미리 잡기.",early:true},
   {name:"2027 설 연휴",start:"2027-02-06",end:"2027-02-09",d:"2/6(토) – 2/9(화) · 대체휴일 포함 4일",
    impact:"2026 설 주 혼용 왕복 매출 +117%·편도 −18%, 리턴프리 심야 −34%. CMNP −28%·엔젤 −64%.",
-   action:"연휴 기간과 직전 주말까지 왕복 얼리버드 선판매. 연휴 직후 탁송 회수 물량 미리 확보.",early:true}
+   action:"연휴 4일을 왕복 얼리버드로 선판매(오픈 기간·물량 상한 설정). 연휴 직후 탁송 회수 물량 미리 확보.",early:true}
 ];
 
 /* ---------- 상태 ---------- */
@@ -399,6 +414,9 @@ function render(){
 
   wxChart(W,labels);
   hyChart(W,labels,B);
+  {const nW=W.filter(w=>w.how!=null&&!w.ev&&!w.pre&&!w.rfBad);const G=Object.fromEntries(groups(W,EVENTS).map(g=>[g.ev.id,g]));const g=id=>{const a=(G[id]?.ws||[]).filter(w=>w.hrt!=null);return a.length?avg(a.map(w=>w.hrt))-B.hrt:null};
+   HYK={perCar:avg(nW.map(w=>w.how/w.hyCars)),gainSeol:g("seol"),gainChu:g("chuseok")};}
+  renderCal();
   const W25=weeks25(); const B25={rfn:baseline(W25,"rfn"),rfd:baseline(W25,"rfd")};
   wxInsights(W,B,W25,B25);
   tiles(W,B); seasonTable(W,B); seasonTable25(W25,B25); insights(W,B,W25,B25); rawTable(W); chips();
@@ -522,11 +540,19 @@ function rawTable(W){
   document.getElementById("tRaw").innerHTML=h+"</tbody>";
 }
 
-document.getElementById("leadW").textContent=LEAD_WEEKS;
-document.getElementById("cal").innerHTML=UPCOMING.filter(u=>!u.end||Date.parse(u.end)+DAY>Date.now()).map(u=>{
-  let due=u.due?`대응 시점 <span>${u.due}</span>`:"";
-  if(u.early){const d=new Date(Date.parse(u.start)-LEAD_WEEKS*7*DAY);const wd="일월화수목금토"[d.getUTCDay()];due=`얼리버드 오픈 기한 <span>${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}-${String(d.getUTCDate()).padStart(2,"0")}(${wd})</span>`;}
-  return `<div class="ev"><b>${u.name}</b><span class="d">${u.d}</span><dl><dt>작년 영향</dt><dd>${u.impact}</dd><dt>혼용 차량 대응</dt><dd>${u.action}</dd></dl><div class="due">${due}</div></div>`}).join("");
+function renderCal(){
+  const won=v=>v>=1e5?(v/1e5).toLocaleString("ko-KR",{maximumFractionDigits:1})+"억원":Math.round(v/10).toLocaleString("ko-KR")+"만원"; /* 입력 단위: 천원 */
+  if(HYK){const lock=EB_CARS*LEAD_WEEKS*HYK.perCar;
+    document.getElementById("calcOut").innerHTML=`혼용 차량 1대의 평시 주간 편도 매출은 약 <b>${won(HYK.perCar)}</b>입니다. D-${LEAD_WEEKS}주에 열어 ${EB_CARS}대가 잡히면 편도 기회비용은 최대 <b>${won(lock)}</b>(대당 ${won(LEAD_WEEKS*HYK.perCar)}). 얼리버드 왕복 1건이 이 금액(+할인분) 이상 벌어야 남는 장사입니다. 참고로 2026 설 주 왕복 매출은 평시보다 <b>${won(HYK.gainSeol)}</b>, 추석 주 <b>${won(HYK.gainChu)}</b> 늘었습니다. 실제 비용은 예약이 들어온 날부터 잠기므로 이보다 작고, 연휴 주 편도는 평시보다 20% 안팎 적습니다.`;}
+  document.getElementById("cal").innerHTML=UPCOMING.filter(u=>!u.end||Date.parse(u.end)+DAY>Date.now()).map(u=>{
+    let due=u.due?`대응 시점 <span>${u.due}</span>`:"";
+    if(u.early){const d=new Date(Date.parse(u.start)-LEAD_WEEKS*7*DAY);const wd="일월화수목금토"[d.getUTCDay()];due=`얼리버드 오픈 (D-${LEAD_WEEKS}주) <span>${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}-${String(d.getUTCDate()).padStart(2,"0")}(${wd})</span>`;}
+    return `<div class="ev"><b>${u.name}</b><span class="d">${u.d}</span><dl><dt>작년 영향</dt><dd>${u.impact}</dd><dt>혼용 차량 대응</dt><dd>${u.action}</dd></dl><div class="due">${due}</div></div>`}).join("");
+}
+try{const v=JSON.parse(localStorage.getItem("eb")||"null");if(v){LEAD_WEEKS=v.w||LEAD_WEEKS;EB_CARS=v.n??EB_CARS}}catch(e){}
+const inW=document.getElementById("inW"),inN=document.getElementById("inN");inW.value=LEAD_WEEKS;inN.value=EB_CARS;
+const onIn=()=>{LEAD_WEEKS=Math.min(8,Math.max(1,+inW.value||1));EB_CARS=Math.max(0,+inN.value||0);try{localStorage.setItem("eb",JSON.stringify({w:LEAD_WEEKS,n:EB_CARS}))}catch(e){}renderCal()};
+inW.addEventListener("input",onIn);inN.addEventListener("input",onIn);
 const lagOn=document.getElementById("lagOn"),lagOff=document.getElementById("lagOff");
 function setLag(v){LAG=v;lagOn.setAttribute("aria-pressed",v);lagOff.setAttribute("aria-pressed",!v);render()}
 lagOn.onclick=()=>setLag(true); lagOff.onclick=()=>setLag(false);
