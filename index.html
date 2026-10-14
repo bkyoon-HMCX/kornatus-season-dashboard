@@ -8,7 +8,7 @@
 /* Layout: 운영 대시보드 — 요약 타일 → 평시 대비 지수(시즌 밴드) → 지표별 상세 → 시즌 영향표 → 리턴프리 오버레이 입력 → 데이터 노트 */
 :root{
   --bg:#f6f7f9; --surface:#ffffff; --ink:#131a24; --ink-2:#4a5463; --ink-3:#7a8494; --line:#e2e6ec; --grid:#eef1f4;
-  --s-cmnp:#2a78d6; --s-cmnp-2:#86b6ef; --s-angel:#eb6834; --s-rfn:#1baf7a; --s-rfd:#eda100; --wx-rain:#8fa3b8; --wx-snow:#5b6fd6; --wx-temp:#c2456b;
+  --s-cmnp:#2a78d6; --s-cmnp-2:#86b6ef; --s-angel:#eb6834; --s-rfn:#1baf7a; --s-rfd:#eda100; --wx-rain:#8fa3b8; --wx-snow:#5b6fd6; --wx-temp:#c2456b; --s-rt:#7a5cc4; --s-ow:#b9a8e3;
   --band-major:rgba(120,98,70,.13); --band-minor:rgba(110,120,135,.10); --band-pre:rgba(120,98,70,.05); --band-anom:rgba(227,73,72,.08);
   --good:#0f7b3f; --bad:#c23b3a; --warn:#a86a00; --chip:#eef2f7;
   --f-body:"IBM Plex Sans KR",system-ui,-apple-system,"Malgun Gothic",sans-serif;
@@ -16,12 +16,12 @@
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#0f1318; --surface:#171c23; --ink:#eef1f5; --ink-2:#b3bcc8; --ink-3:#848e9c; --line:#29313b; --grid:#222a33;
-  --s-cmnp:#3987e5; --s-cmnp-2:#1c5cab; --s-angel:#d95926; --s-rfn:#199e70; --s-rfd:#c98500; --wx-rain:#5d7187; --wx-snow:#8b9bf0; --wx-temp:#e0708f;
+  --s-cmnp:#3987e5; --s-cmnp-2:#1c5cab; --s-angel:#d95926; --s-rfn:#199e70; --s-rfd:#c98500; --wx-rain:#5d7187; --wx-snow:#8b9bf0; --wx-temp:#e0708f; --s-rt:#9b80e6; --s-ow:#4b3a80;
   --band-major:rgba(214,190,150,.13); --band-minor:rgba(160,170,185,.09); --band-pre:rgba(214,190,150,.05); --band-anom:rgba(230,103,103,.10);
   --good:#4cc47f; --bad:#ef7b7a; --warn:#e0a53a; --chip:#222a34; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0f1318; --surface:#171c23; --ink:#eef1f5; --ink-2:#b3bcc8; --ink-3:#848e9c; --line:#29313b; --grid:#222a33;
-  --s-cmnp:#3987e5; --s-cmnp-2:#1c5cab; --s-angel:#d95926; --s-rfn:#199e70; --s-rfd:#c98500; --wx-rain:#5d7187; --wx-snow:#8b9bf0; --wx-temp:#e0708f;
+  --s-cmnp:#3987e5; --s-cmnp-2:#1c5cab; --s-angel:#d95926; --s-rfn:#199e70; --s-rfd:#c98500; --wx-rain:#5d7187; --wx-snow:#8b9bf0; --wx-temp:#e0708f; --s-rt:#9b80e6; --s-ow:#4b3a80;
   --band-major:rgba(214,190,150,.13); --band-minor:rgba(160,170,185,.09); --band-pre:rgba(214,190,150,.05); --band-anom:rgba(230,103,103,.10);
   --good:#4cc47f; --bad:#ef7b7a; --warn:#e0a53a; --chip:#222a34; color-scheme:dark}
 *{box-sizing:border-box}
@@ -62,7 +62,7 @@ table{border-collapse:collapse;width:100%;font-size:13px;min-width:720px}
 th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
 #tSeason td:first-child,#tSeason25 td:first-child{white-space:nowrap}
 #tSeason td:last-child,#tSeason25 td:last-child{min-width:220px}
-#tSeason td:nth-child(7),#tSeason25 td:nth-child(5){white-space:nowrap}
+#tSeason td:nth-child(9),#tSeason25 td:nth-child(5){white-space:nowrap}
 th{font-size:12px;color:var(--ink-3);font-weight:500;white-space:nowrap}
 td.n{font-family:var(--f-num);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
 th.n{text-align:right}
@@ -71,6 +71,14 @@ td .tag{display:inline-block;font-size:11px;padding:1px 6px;border-radius:4px;ba
 .cal .ev{border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .cal .ev b{font-size:13.5px}
 .cal .ev .d{font-family:var(--f-num);font-size:12px;color:var(--ink-2)}
+.rule{border-left:3px solid var(--s-rfn);background:var(--bg);border-radius:0 8px 8px 0;padding:10px 14px;display:grid;gap:6px}
+.rule p{margin:0;font-size:13px;line-height:1.65;color:var(--ink-2);text-wrap:pretty}
+.rule b{color:var(--ink)}
+.cal .ev dl{margin:8px 0 0;display:grid;gap:6px}
+.cal .ev dt{font-size:11.5px;color:var(--ink-3);font-weight:600}
+.cal .ev dd{margin:0;font-size:12.5px;line-height:1.6;color:var(--ink-2);text-wrap:pretty}
+.cal .ev .due{margin-top:auto;padding-top:10px;font-size:12px;color:var(--ink);font-weight:600}
+.cal .ev .due span{font-family:var(--f-num);font-weight:500;color:var(--s-rfn)}
 .cal .ev p{margin:6px 0 0;font-size:12.5px;line-height:1.6;color:var(--ink-2);text-wrap:pretty}
 .insights{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .ins{border-top:2px solid var(--ink);padding-top:10px;min-width:0}
@@ -110,6 +118,7 @@ details summary{cursor:pointer;font-weight:600;font-size:14px}
     <span><b>낮</b>리턴프리 05~21시 이용 (원 시트의 "주간")</span>
     <span><b>심야</b>리턴프리 21~05시 이용 (주 이용자: 대리기사 복귀·이동)</span>
     <span><b>평시 = 100</b>시즌·연휴 직전·이상치 주를 뺀 평균</span>
+    <span><b>혼용 차량</b>왕복과 리턴프리를 함께 쓰는 차량 (투루카·카카오T 앱)</span>
   </div>
 
   <section class="tiles" id="tiles" aria-label="요약 지표"></section>
@@ -141,6 +150,13 @@ details summary{cursor:pointer;font-weight:600;font-size:14px}
     <div class="chart"><canvas id="cRf" aria-label="리턴프리 Weekly 낮·심야 이용건수"></canvas></div>
   </section>
 
+  <section class="panel">
+    <div class="panel-head"><h2>혼용 차량 Weekly 매출 · 왕복 vs 편도</h2><span class="hint">New 혼용BM 지표 · 수도권 · 투루카+카카오T · 거래액</span></div>
+    <div class="legend"><span><span class="sw" style="background:var(--s-rt)"></span>왕복</span><span><span class="sw" style="background:var(--s-ow)"></span>편도(리턴프리)</span><span><span class="ln" style="background:var(--ink-3)"></span>왕복 비중(%)</span></div>
+    <div class="chart"><canvas id="cHy" aria-label="혼용 차량 주간 왕복·편도 거래액"></canvas></div>
+    <div class="insights" id="hyIns"></div>
+  </section>
+
   <div class="grid2">
     <section class="panel">
       <div class="panel-head"><h2>CMNP Weekly 접수·완료콜</h2><span class="hint" id="cmHint"></span></div>
@@ -170,7 +186,11 @@ details summary{cursor:pointer;font-weight:600;font-size:14px}
   </section>
 
   <section class="panel">
-    <div class="panel-head"><h2>다가오는 시즌</h2><span class="hint">2026 Q4 – 2027 설</span></div>
+    <div class="panel-head"><h2>다가오는 시즌 · 혼용 차량 대응</h2><span class="hint">2026 Q4 – 2027 설 · 얼리버드 오픈 기한 = 연휴 시작 D-<span id="leadW"></span>주(가정)</span></div>
+    <div class="rule">
+      <p><b>운영 원칙</b> 명절 주에는 혼용 차량 <b>왕복 매출이 평시의 2배 이상</b>(설 +117%, 추석 +149%)으로 뛰고, 편도(리턴프리)는 −20% 안팎으로 줄어듭니다(심야 −34~−37%). 혼용 차량은 연휴 기간을 <b>왕복 얼리버드</b>로 미리 팔아 두는 편이 매출에 유리합니다. 리턴프리로 나간 차가 연휴 중 다른 차고지에 머물면 재수요가 없어 <b>탁송 회수 비용</b>까지 생기므로, 왕복 예약은 원 차고지 복귀 측면에서도 낫습니다.</p>
+      <p class="hint">이용 주 기준으로 보면 직전 주 왕복 매출은 평시 수준(설 0%, 추석 +14%)이고 증가는 연휴 주에 몰립니다. "직전 수요 증가"는 예약이 들어오는 시점의 이야기라, 왕복 예약 리드타임(예약일→이용일) 데이터가 있으면 얼리버드 기한을 실제 값으로 맞출 수 있습니다.</p>
+    </div>
     <div class="cal" id="cal"></div>
   </section>
 
@@ -184,6 +204,7 @@ details summary{cursor:pointer;font-weight:600;font-size:14px}
         <li>엔젤 WK30–32 누적치(270,942 → 346,487 → 287,000)는 증감이 맞지 않아 3주 평균으로만 표시하고 비교에서 뺐습니다. WK37은 2주 합계를 반씩 나눴습니다.</li>
         <li>리턴프리: Google 시트 "Pricing 주요지표 실적관리"의 "리턴프리 주간/심야" 탭 일별 값(2025-01-01 ~ 2026-09-13)을 월~일로 합산했습니다. 38주(9/14–20)·39주(9/21–27)는 담당자가 전달한 Weekly 건수(낮 2,223/심야 4,871, 낮 1,991/심야 3,036)와 매출(낮 40,363,079/심야 60,142,677원, 낮 41,200,315/심야 39,918,634원)입니다. 건당 매출이 시트 값과 같은 수준이라 부가세 제외 기준으로 봤습니다. 시트의 "주간건수"는 낮(05~21시) 이용, "심야건수"는 21~05시 이용입니다. 2026-03-09 주(피플카 11주)는 플랫폼(앱) 장애가 있었던 주라 비정상으로 표시하고 평시 기준·비교에서 뺐습니다. 9/28 주(40주)부터는 피플카 "리턴프리·카카오 채널 대시보드"(peoplecar-skkim.github.io/returnfree-km-dashboard)의 주차별 낮(주간)·심야 건수와 매출(부가세 제외)을 씁니다. 주차는 월~일 ISO 주 기준입니다. 이 화면의 리턴프리 값은 주간 업데이트 때 가져온 스냅샷이라 원본이 바뀌어도 자동 반영되지 않습니다.</li>
         <li>수도권 날씨: Open-Meteo Historical Weather API(재분석 자료)의 서울시청·인천·수원 3지점 일별 값을 평균해 월~일로 묶었습니다. 강수·적설은 주 합계, 기온은 주 평균입니다. 재분석이라 실제 관측보다 적설이 작게 잡히는 경향이 있습니다(예: 2025-12-04 서울 첫눈 대설주의보).</li>
+        <li>혼용 차량: Google 시트 "New 혼용BM 지표"의 "주간(월-일)" 탭(수도권, 투루카+카카오T) BM 별 소계의 왕복·편도 거래액과 이용 건. 2026-01-12 주부터. 편도는 리턴프리 이용(카카오T 편도 포함)이라 리턴프리 대시보드 건수와 조금 다릅니다. 3/9 주는 앱 장애로 비교에서 뺐습니다.</li>
         <li>2025 동주: 2026년 같은 주차의 364일 전 주. 공휴일은 관공서 공휴일 기준입니다.</li>
       </ul>
     </details>
@@ -205,6 +226,8 @@ const ANG_PY={"2026-01-05":8160,"2026-01-26":4924,"2026-02-02":6258,"2026-02-09"
 /* 리턴프리 Weekly: 월요일(YYMMDD) → [낮건수, 심야건수, 낮매출(천원), 심야매출(천원)] */
 const RF={"250106":[2148,3565,33931,33648],"250113":[2148,3792,30767,36508],"250120":[2253,3890,34441,37580],"250127":[2377,2564,37872,25795],"250203":[1988,3158,30161,30384],"250210":[2186,3622,32022,36116],"250217":[2220,3864,33303,36547],"250224":[2197,4177,34190,39936],"250303":[2401,4019,35134,38006],"250310":[2454,4448,37085,43465],"250317":[2472,4335,36317,43364],"250324":[2440,4559,35799,46938],"250331":[2391,4615,34178,47501],"250407":[2412,4668,35369,49768],"250414":[2473,4678,36010,48850],"250421":[2353,4764,34478,50515],"250428":[2169,3828,33736,40446],"250505":[2532,3904,41153,42244],"250512":[2525,4518,38381,48903],"250519":[2545,4516,37862,49198],"250526":[2563,4788,38148,53583],"250602":[2719,4319,41504,47853],"250609":[2570,4734,38070,51905],"250616":[2691,4418,40779,49629],"250623":[2681,4621,41482,51372],"250630":[2708,4876,40407,53606],"250707":[2534,4658,39310,51815],"250714":[2370,3865,36827,44463],"250721":[2450,4564,39291,51840],"250728":[2544,4279,40802,49916],"250804":[2594,4263,41012,47695],"250811":[2327,3884,38485,45895],"250818":[2528,4496,41971,51382],"250825":[2548,4431,42847,52716],"250901":[2554,4612,41875,53340],"250908":[2591,4645,41292,52815],"250915":[2595,4706,41871,53380],"250922":[2498,4875,39752,55941],"250929":[2407,3842,40991,43258],"251006":[2221,2564,41823,31141],"251013":[2406,4045,38006,46496],"251020":[2679,4660,43254,53433],"251027":[2454,4482,40255,51154],"251103":[2466,4495,38040,51644],"251110":[2444,4436,38644,50675],"251117":[2276,4161,36541,46306],"251124":[2332,4324,38476,48986],"251201":[2223,3855,36066,44270],"251208":[2319,4176,35869,47312],"251215":[2430,4250,39940,47835],"251222":[2263,3270,41947,38580],"251229":[2235,3188,37450,36751],"260105":[2223,3955,34024,43635],"260112":[2207,4306,35949,48080],"260119":[2172,3960,34822,44686],"260126":[2110,4236,33001,47035],"260202":[2101,4214,31840,45718],"260209":[2279,4201,40603,47829],"260216":[2294,3201,40963,36803],"260223":[2348,4630,38988,51026],"260302":[2426,4437,40312,49043],"260309":[1345,2195,20994,22351],"260316":[2415,4763,35340,48571],"260323":[2434,5375,39055,56580],"260330":[2285,4983,38854,55628],"260406":[2234,4981,40471,55814],"260413":[2234,5400,40636,60287],"260420":[2260,5187,41323,57355],"260427":[2399,4729,44521,55048],"260504":[2419,4681,44277,53245],"260511":[2432,5043,43915,59395],"260518":[2235,4729,40854,58941],"260525":[2431,4481,44825,57418],"260601":[2571,5030,45094,61475],"260608":[2501,5418,44792,65161],"260615":[2454,5011,44950,61548],"260622":[2485,5519,45243,67423],"260629":[2507,5244,44488,65120],"260706":[2341,4945,41895,60811],"260713":[2468,4646,46633,58172],"260720":[2300,4972,41909,60583],"260727":[2258,4985,41595,62081],"260803":[2273,4815,40158,58902],"260810":[2164,4667,38845,58380],"260817":[2284,4664,44571,57925],"260824":[2388,4987,44673,60625],"260831":[2304,4934,42702,63033],"260907":[2326,5268,41370,65260],"260914":[2223,4871,40363,60143],"260921":[1991,3036,41200,39919],"260928":[2300,4388,40527,53021],"261005":[2215,4071,42163,50799]};
 const RF_BAD=["260309"];
+/* 혼용 차량 Weekly (New 혼용BM 지표 > 주간(월-일), 수도권): 월요일(YYMMDD) → [왕복 거래액(천원), 편도 거래액(천원), 왕복 이용건, 편도 이용건, 혼용 유효 차량 수, 카카오T 거래액(천원)] */
+const HY={"260112":[61568,97742,1335,7685,518,14487],"260119":[55349,91718,1201,7245,518,12787],"260126":[53527,93733,1219,7507,534,14536],"260202":[60276,91117,1286,7461,550,14720],"260209":[70120,101188,1463,7657,550,14065],"260216":[152752,89313,2029,6370,550,14956],"260223":[74585,104241,1547,8304,550,15512],"260302":[65700,103573,1332,8071,550,16285],"260309":[21189,44343,623,3658,528,1516],"260316":[49600,84169,1217,7206,502,0],"260323":[52380,102498,1193,8437,501,7498],"260330":[58920,107314,1283,8373,549,14562],"260406":[58961,109645,1331,8337,549,15612],"260413":[58721,115069,1235,8844,549,14975],"260420":[61428,113266,1288,8710,549,16638],"260427":[83198,115567,1568,8309,527,18315],"260504":[74616,113739,1396,8236,527,18336],"260511":[55287,119274,1133,8761,526,17044],"260518":[68004,115669,1329,8200,522,18407],"260525":[66112,117638,1246,8107,524,17171],"260601":[55302,124176,1157,8928,598,19182],"260608":[58728,127991,1199,9380,598,20065],"260615":[61044,125124,1285,8853,598,21133],"260622":[71011,128212,1495,9387,598,20051],"260629":[67702,124776,1466,8947,597,15820],"260706":[87177,109631,1889,8034,600,10996],"260713":[114130,113735,2141,7779,600,9875],"260720":[86316,110645,1688,7940,600,8788],"260727":[101980,112038,1877,7887,600,8819],"260803":[112191,107310,1939,7647,598,9439],"260810":[122029,103960,2139,7391,598,7907],"260817":[121841,110086,2095,7534,597,7468],"260824":[106731,113579,2152,8030,597,8691],"260831":[84626,112392,1838,7898,596,7697],"260907":[85867,115888,1840,8350,596,10212],"260914":[79996,108509,1632,7807,595,8610],"260921":[174850,86336,2399,5451,595,6767],"260928":[94972,100158,1922,7328,595,7394],"261005":[115339,99965,2115,6949,595,7210]};
 /* 수도권 날씨 Weekly(서울시청·인천·수원 평균, Open-Meteo Historical): 월요일(YYMMDD) → [평균 최저℃, 평균 최고℃, 강수량mm, 적설cm, 비 온 날(≥1mm), 한파일(최저≤−10℃), 폭염일(최고≥33℃)] */
 const WX={"241230":[-3.1,4.3,6,3.5,1,0,0],"250106":[-8.9,-1.5,4,2.2,1,2,0],"250113":[-4.5,3.5,1,0.4,0,0,0],"250120":[-2.0,6.0,0,0.0,0,0,0],"250127":[-5.7,0.4,11,7.0,2,0,0],"250203":[-11.3,-3.3,2,1.4,1,6,0],"250210":[-4.3,5.1,3,1.8,1,0,0],"250217":[-5.6,0.9,0,0.0,0,0,0],"250224":[-1.7,8.7,19,0.1,2,0,0],"250303":[-0.7,7.2,16,7.2,2,0,0],"250310":[1.8,12.8,1,0.0,0,0,0],"250317":[0.3,11.2,5,3.3,2,0,0],"250324":[3.1,14.6,8,1.3,2,0,0],"250331":[2.5,12.8,15,0.0,1,0,0],"250407":[4.0,16.9,25,5.4,3,0,0],"250414":[7.2,17.7,32,1.3,2,0,0],"250421":[9.1,18.5,27,0.0,1,0,0],"250428":[8.1,17.4,27,0.0,2,0,0],"250505":[8.9,17.4,34,0.0,2,0,0],"250512":[12.8,22.8,23,0.0,3,0,0],"250519":[14.5,23.7,9,0.0,3,0,0],"250526":[14.2,26.8,2,0.0,1,0,0],"250602":[17.0,26.7,2,0.0,0,0,0],"250609":[18.0,29.0,18,0.0,2,0,0],"250616":[19.5,26.8,59,0.0,3,0,1],"250623":[20.1,27.0,23,0.0,4,0,0],"250630":[24.1,30.0,11,0.0,2,0,0],"250707":[24.1,34.8,3,0.0,1,0,5],"250714":[21.5,27.0,221,0.0,7,0,0],"250721":[24.7,33.0,8,0.0,2,0,3],"250728":[26.0,35.5,7,0.0,1,0,6],"250804":[22.5,29.5,24,0.0,3,0,0],"250811":[23.0,29.2,79,0.0,3,0,0],"250818":[24.7,31.5,8,0.0,3,0,1],"250825":[23.7,30.3,63,0.0,6,0,0],"250901":[21.8,29.2,83,0.0,3,0,0],"250908":[19.5,27.3,58,0.0,2,0,0],"250915":[18.5,24.8,93,0.0,4,0,0],"250922":[17.6,24.6,65,0.0,2,0,0],"250929":[17.1,23.5,8,0.0,2,0,0],"251006":[16.6,22.3,78,0.0,5,0,0],"251013":[13.7,20.8,61,0.0,6,0,0],"251020":[8.1,16.5,2,0.0,0,0,0],"251027":[5.1,14.0,3,0.0,2,0,0],"251103":[5.7,15.5,0,0.0,0,0,0],"251110":[3.4,13.9,1,0.0,0,0,0],"251117":[0.5,10.0,0,0.0,0,0,0],"251124":[2.7,10.3,16,0.0,2,0,0],"251201":[-5.2,3.8,4,1.4,2,0,0],"251208":[-2.5,5.4,19,3.4,2,0,0],"251215":[-2.0,5.4,7,0.0,2,0,0],"251222":[-6.0,1.7,12,1.0,2,1,0],"251229":[-7.4,0.1,1,0.0,1,3,0],"260105":[-6.9,0.7,9,2.6,1,0,0],"260112":[-6.0,3.5,4,2.2,1,1,0],"260119":[-12.6,-3.9,3,2.1,2,7,0],"260126":[-9.9,-1.6,0,0.0,0,3,0],"260202":[-7.7,0.3,1,0.7,1,2,0],"260209":[-3.2,6.7,1,0.2,0,1,0],"260216":[-2.2,8.2,0,0.0,0,0,0],"260223":[0.4,10.1,2,1.2,1,0,0],"260302":[-1.3,7.1,27,5.0,2,0,0],"260309":[-0.1,9.2,1,0.0,0,0,0],"260316":[0.3,11.7,6,0.0,1,0,0],"260323":[4.5,17.1,0,0.0,0,0,0],"260330":[7.3,17.5,19,0.0,4,0,0],"260406":[5.0,14.1,31,0.0,3,0,0],"260413":[10.5,24.5,0,0.0,0,0,0],"260420":[8.4,21.2,2,0.0,1,0,0],"260427":[10.2,19.4,17,0.0,3,0,0],"260504":[9.3,20.7,4,0.0,1,0,0],"260511":[14.3,27.0,7,0.0,2,0,0],"260518":[15.5,24.3,65,0.0,2,0,0],"260525":[17.0,26.5,16,0.0,3,0,0],"260601":[17.3,28.0,13,0.0,2,0,0],"260608":[16.5,27.5,8,0.0,3,0,0],"260615":[20.6,30.3,68,0.0,3,0,1],"260622":[19.1,28.1,5,0.0,2,0,0],"260629":[21.6,30.6,34,0.0,5,0,0],"260706":[23.1,29.2,110,0.0,5,0,1],"260713":[23.0,29.6,118,0.0,5,0,0],"260720":[23.9,28.9,134,0.0,7,0,0],"260727":[24.9,31.2,14,0.0,4,0,1],"260803":[26.4,35.9,17,0.0,3,0,6],"260810":[22.8,31.3,32,0.0,5,0,2],"260817":[23.0,29.8,101,0.0,5,0,0],"260824":[24.0,29.9,22,0.0,5,0,0],"260831":[20.9,27.6,84,0.0,2,0,0],"260907":[16.5,25.7,0,0.0,0,0,0],"260914":[17.3,28.0,0,0.0,0,0,0],"260921":[18.0,27.7,15,0.0,1,0,0],"260928":[14.2,23.7,4,0.0,1,0,0],"261005":[12.3,23.7,2,0.0,1,0,0]};
 
@@ -245,10 +268,17 @@ const EVENTS25=[
   {id:"xmas",name:"성탄절",s:"2025-12-25",e:"2025-12-25",kind:"minor"},
   {id:"ny",name:"신정",s:"2026-01-01",e:"2026-01-01",kind:"minor"}
 ];
+const LEAD_WEEKS=4; /* 얼리버드 오픈 기한: 연휴 시작 D-4주 (가정 — 왕복 예약 리드타임 데이터로 조정) */
 const UPCOMING=[
-  {name:"연말 송년회 시즌",end:"2026-12-24",d:"12/1 – 12/24",note:"대리 성수기인데 작년 리턴프리 심야는 평시보다 낮았습니다. 12/1 주는 첫눈·한파, 성탄·신정 주는 연휴로 −25%대. 둘째·셋째 주도 늘지 않아, 성수기엔 기사가 복귀 없이 도심에서 다음 콜을 바로 잡는지 확인이 필요합니다."},
-  {name:"크리스마스 · 신정",end:"2027-01-01",d:"12/25(금) · 1/1(금)",note:"작년 성탄·신정 주 리턴프리 심야 −20%대, 낮은 소폭 감소."},
-  {name:"2027 설 연휴",end:"2027-02-09",d:"2027-02-06 – 02-09",note:"2026 설 주 CMNP −28%·엔젤 −64%·리턴프리 심야 −34%, 낮은 평시 수준 유지."}
+  {name:"연말 송년회 시즌",start:"2026-12-01",end:"2026-12-24",d:"12/1 – 12/24",
+   impact:"작년 12월 1–3주 리턴프리 심야 −12%·−4%·−2%(첫 주는 첫눈·한파), 낮은 평시 수준. 대리 성수기지만 심야가 늘지는 않았습니다.",
+   action:"리턴프리 평시 운영. 한파·대설 예보 주는 심야 −10% 안팎을 감안해 단기 조정.",due:"주간 날씨 예보 확인 (매주)"},
+  {name:"크리스마스 · 신정",start:"2026-12-24",end:"2027-01-01",d:"12/25(금) · 1/1(금)",
+   impact:"작년 성탄·신정 주 리턴프리 심야 −25%·−27%, 낮 −7%·−8%. 두 주 연속 약세(작년 왕복 주간 데이터는 없음).",
+   action:"두 주를 왕복 얼리버드로 선판매. 연휴 중 다른 차고지에 남는 혼용 차량은 연휴 뒤 탁송 회수 계획을 미리 잡기.",early:true},
+  {name:"2027 설 연휴",start:"2027-02-06",end:"2027-02-09",d:"2/6(토) – 2/9(화) · 대체휴일 포함 4일",
+   impact:"2026 설 주 혼용 왕복 매출 +117%·편도 −18%, 리턴프리 심야 −34%. CMNP −28%·엔젤 −64%.",
+   action:"연휴 기간과 직전 주말까지 왕복 얼리버드 선판매. 연휴 직후 탁송 회수 물량 미리 확보.",early:true}
 ];
 
 /* ---------- 상태 ---------- */
@@ -258,7 +288,9 @@ const SERIES=[
   {id:"cc",label:"CMNP 완료",color:"--s-cmnp-2",on:false,dash:[5,4]},
   {id:"ang",label:"엔젤 인입",color:"--s-angel",on:true},
   {id:"rfn",label:"리턴프리 심야",color:"--s-rfn",on:true},
-  {id:"rfd",label:"리턴프리 낮",color:"--s-rfd",on:true}
+  {id:"rfd",label:"리턴프리 낮",color:"--s-rfd",on:true},
+  {id:"hrt",label:"혼용 왕복 매출",color:"--s-rt",on:true},
+  {id:"how",label:"혼용 편도 매출",color:"--s-ow",on:false,dash:[5,4]}
 ];
 
 /* ---------- 주 축 ---------- */
@@ -283,7 +315,7 @@ function buildWeeks(){
   const tot=ANG[32]-ANG[29];
   for(const n of [30,31,32]){const i=byKey[iso(new Date(+reportMon(n)-7*DAY))]; if(i!=null){W[i].ang=tot/3; W[i].angFlag="anom";}}
   W.forEach(w=>{const r=RF[yymmdd(w.mon)]; if(r){w.rfd=r[0];w.rfn=r[1];w.rfdS=r[2];w.rfnS=r[3];w.rfBad=RF_BAD.includes(yymmdd(w.mon));}
-    const p=RF[yymmdd(new Date(+w.mon-364*DAY))]; if(p){w.rfdPy=p[0];w.rfnPy=p[1];} w.wx=WX[yymmdd(w.mon)]||null;});
+    const p=RF[yymmdd(new Date(+w.mon-364*DAY))]; if(p){w.rfdPy=p[0];w.rfnPy=p[1];} w.wx=WX[yymmdd(w.mon)]||null; const h=HY[yymmdd(w.mon)]; if(h){w.hrt=h[0];w.how=h[1];w.hrtN=h[2];w.howN=h[3];w.hyCars=h[4];w.hyKakao=h[5];}});
   tagEvents(W,EVENTS);
   return W;
 }
@@ -291,7 +323,7 @@ function weeks25(){
   const W=[]; for(let t=Date.UTC(2025,0,6);t<=Date.UTC(2025,11,29);t+=7*DAY){const m=new Date(t),r=RF[yymmdd(m)]; W.push({mon:m,key:iso(m),rfd:r?r[0]:null,rfn:r?r[1]:null,wx:WX[yymmdd(m)]||null})}
   tagEvents(W,EVENTS25); return W;
 }
-const isFlag=(w,f)=>(f==="ang"&&w.angFlag)||((f==="rfn"||f==="rfd")&&w.rfBad);
+const isFlag=(w,f)=>(f==="ang"&&w.angFlag)||((f==="rfn"||f==="rfd"||f==="hrt"||f==="how")&&w.rfBad);
 function baseline(W,f){return avg(W.filter(w=>w[f]!=null&&!w.ev&&!w.pre&&!isFlag(w,f)).map(w=>w[f]))}
 
 /* ---------- 차트 공통 ---------- */
@@ -366,6 +398,7 @@ function render(){
     {type:"line",label:"2025 동주",data:W.map(w=>w.angPy??null),borderColor:css("--ink-3"),backgroundColor:css("--ink-3"),borderWidth:1.5,borderDash:[3,3],pointRadius:2,pointHoverRadius:5,spanGaps:true,tension:.2}]},options:o3}));
 
   wxChart(W,labels);
+  hyChart(W,labels,B);
   const W25=weeks25(); const B25={rfn:baseline(W25,"rfn"),rfd:baseline(W25,"rfd")};
   wxInsights(W,B,W25,B25);
   tiles(W,B); seasonTable(W,B); seasonTable25(W25,B25); insights(W,B,W25,B25); rawTable(W); chips();
@@ -401,6 +434,29 @@ function wxChart(W,labels){
     {type:"line",label:"평균 최저기온",yAxisID:"y1",data:W.map(w=>w.wx?w.wx[0]:null),borderColor:css("--wx-temp"),backgroundColor:css("--wx-temp"),borderWidth:2,pointRadius:0,pointHoverRadius:4,tension:.25,order:1}]},options:o}));
 }
 
+/* ---------- 혼용 차량 ---------- */
+const mil=v=>v==null?"–":(v/1000).toLocaleString("ko-KR",{maximumFractionDigits:1})+"백만";
+function hyChart(W,labels,B){
+  const o=commonOpts(W,{stacked:true,beginAtZero:true,ticks:{color:css("--ink-3"),font:{family:css("--f-num"),size:11},callback:v=>(v/1000)+"M"}});
+  o.scales.x.stacked=true;
+  o.scales.y1={position:"right",min:0,max:100,grid:{display:false},border:{display:false},ticks:{color:css("--ink-3"),font:{family:css("--f-num"),size:11},callback:v=>v+"%"}};
+  o.plugins.tooltip.callbacks.label=c=>c.dataset.yAxisID==="y1"?" 왕복 비중  "+(c.parsed.y==null?"–":c.parsed.y.toFixed(0)+"%"):" "+c.dataset.label+"  "+mil(c.parsed.y)+"원";
+  o.plugins.tooltip.callbacks.afterBody=items=>{const w=W[items[0].dataIndex];if(w.hrt==null)return [];const out=["","왕복 "+fmt(w.hrtN)+"건 · 편도 "+fmt(w.howN)+"건","왕복 평시 대비  "+pct((w.hrt/B.hrt-1)*100,0)+" · 편도 "+pct((w.how/B.how-1)*100,0),"혼용 차량 "+fmt(w.hyCars)+"대 · 카카오T "+mil(w.hyKakao)];if(w.rfBad)out.push("앱 장애 주");return out};
+  const faded=hexA(css("--ink-3"),.45);
+  charts.push(new Chart(document.getElementById("cHy"),{type:"bar",data:{labels,datasets:[
+    {label:"왕복",data:W.map(w=>w.hrt??null),backgroundColor:W.map(w=>w.rfBad?faded:css("--s-rt")),stack:"s",barPercentage:.85,categoryPercentage:.85,order:2},
+    {label:"편도",data:W.map(w=>w.how??null),backgroundColor:W.map(w=>w.rfBad?faded:css("--s-ow")),borderRadius:{topLeft:3,topRight:3},stack:"s",barPercentage:.85,categoryPercentage:.85,order:2},
+    {type:"line",label:"왕복 비중",yAxisID:"y1",data:W.map(w=>w.hrt!=null?w.hrt/(w.hrt+w.how)*100:null),borderColor:css("--ink-3"),backgroundColor:css("--ink-3"),borderWidth:1.5,borderDash:[3,3],pointRadius:0,pointHoverRadius:4,tension:.2,order:1}]},options:o}));
+  const G=Object.fromEntries(groups(W,EVENTS).map(g=>[g.ev.id,g]));
+  const d=(ws,f)=>{if(!ws)return null;const v=avg(ws.filter(w=>w[f]!=null&&!w.rfBad).map(w=>w[f]));return v==null?null:(v/B[f]-1)*100};
+  const share=ws=>{if(!ws)return null;const a=ws.filter(w=>w.hrt!=null);return a.length?avg(a.map(w=>w.hrt/(w.hrt+w.how)*100)):null};
+  const base=avg(W.filter(w=>w.hrt!=null&&!w.ev&&!w.pre&&!w.rfBad).map(w=>w.hrt/(w.hrt+w.how)*100));
+  document.getElementById("hyIns").innerHTML=`
+  <div class="ins"><b>연휴엔 왕복이 매출을 끌어올림</b><p>설 주 왕복 매출 ${pct(d(G.seol?.ws,"hrt"),0)}, 추석 주 ${pct(d(G.chuseok?.ws,"hrt"),0)}. 같은 주 편도는 ${pct(d(G.seol?.ws,"how"),0)}·${pct(d(G.chuseok?.ws,"how"),0)}. 왕복 비중이 평시 ${base?base.toFixed(0):"–"}%에서 설 ${share(G.seol?.ws)?.toFixed(0)}%·추석 ${share(G.chuseok?.ws)?.toFixed(0)}%로 올라갑니다.</p></div>
+  <div class="ins"><b>여름휴가도 왕복 시즌</b><p>여름휴가 3주 왕복 매출 ${pct(d(G.summer?.ws,"hrt"),0)}, 편도 ${pct(d(G.summer?.ws,"how"),0)}. 다만 7월 이후 왕복이 전반적으로 높아져 있어(평시 기준이 상반기 위주) 여름·가을 증가폭은 다소 크게 나옵니다.</p></div>
+  <div class="ins"><b>직전 주는 아직 평시</b><p>왕복 매출은 설 직전 주 ${pct(d(G.seol?.pre,"hrt"),0)}, 추석 직전 주 ${pct(d(G.chuseok?.pre,"hrt"),0)}. 이용 주 기준 매출은 연휴 주에 몰리므로, 선판매(얼리버드)는 예약 시점 기준으로 몇 주 앞서 열어야 합니다.</p></div>`;
+}
+
 /* ---------- 지표 선택 칩 ---------- */
 function chips(){
   const el=document.getElementById("chips");
@@ -428,8 +484,8 @@ function dcell(ws,f,b){const clean=ws.filter(w=>w[f]!=null&&!(isFlag(w,f)&&w.ang
   const d=(avg(clean.map(w=>w[f]))/b-1)*100;return `<td class="n ${d>=0?"up":"dn"}">${pct(d,0)}</td>`}
 const MEMO={seol:"CMNP·엔젤 연중 최저. 리턴프리는 심야만 빠지고 낮은 유지.",mar1:"월요일 대체휴일.",may1:"기업 휴무 편차가 커 영향 작음.",child:"화요일 공휴일 + 월요일 징검다리. 엔젤 B2B가 크게 빠짐.",budd:"월요일 대체휴일.",elec:"수요일 공휴일.",summer:"3주에 걸친 완만한 하락. 리턴프리 낮이 더 눌림.",aug15:"여름휴가 끝물.",chuseok:"엔젤·리턴프리 심야 동반 급감. 설과 달리 리턴프리 낮도 두 자릿수 감소."};
 function seasonTable(W,B){
-  const cols=["cr","ang","rfn","rfd"];
-  let h=`<thead><tr><th>시즌</th><th>주</th><th class="n">CMNP 접수</th><th class="n">엔젤 인입</th><th class="n">리턴프리 심야</th><th class="n">리턴프리 낮</th><th>수도권 날씨</th><th>메모</th></tr></thead><tbody>`;
+  const cols=["cr","ang","rfn","rfd","hrt","how"];
+  let h=`<thead><tr><th>시즌</th><th>주</th><th class="n">CMNP 접수</th><th class="n">엔젤 인입</th><th class="n">리턴프리 심야</th><th class="n">리턴프리 낮</th><th class="n">왕복 매출</th><th class="n">편도 매출</th><th>수도권 날씨</th><th>메모</th></tr></thead><tbody>`;
   groups(W,EVENTS).forEach(({ev,ws,pre})=>{
     if(pre.length) h+=`<tr><td>${ev.name} 직전 주<span class="tag">사전 수요</span></td><td class="n" style="text-align:left">${pre.map(w=>md(w.mon)).join(", ")}</td>${cols.map(f=>dcell(pre,f,B[f])).join("")}${wxCell(pre)}<td style="color:var(--ink-2)">연휴 전 몰림 여부</td></tr>`;
     h+=`<tr><td><b>${ev.name}</b><span class="tag">${ev.kind==="major"?"명절·휴가":"공휴일"}</span></td><td class="n" style="text-align:left">${ws.map(w=>md(w.mon)).join(", ")}</td>${cols.map(f=>dcell(ws,f,B[f])).join("")}${wxCell(ws)}<td style="color:var(--ink-2)">${MEMO[ev.id]||""}</td></tr>`;
@@ -461,12 +517,16 @@ function insights(W,B,W25,B25){
 
 /* ---------- 원자료 ---------- */
 function rawTable(W){
-  let h=`<thead><tr><th>주(월)</th><th>시즌</th><th class="n">CMNP 접수</th><th class="n">CMNP 완료</th><th class="n">엔젤 인입</th><th class="n">리턴프리 심야</th><th class="n">리턴프리 낮</th><th class="n">심야 매출(천원)</th><th class="n">낮 매출(천원)</th><th class="n">최저기온</th><th class="n">강수(mm)</th><th class="n">적설(cm)</th></tr></thead><tbody>`;
-  W.forEach(w=>{h+=`<tr><td class="n" style="text-align:left">${iso(w.mon)}${w.cmWk?` <span class="tag">CMNP WK${w.cmWk}</span>`:""}</td><td>${w.ev?w.ev.name:w.pre?w.pre.name+" 직전":""}</td><td class="n">${fmt(w.cr)}</td><td class="n">${fmt(w.cc)}</td><td class="n">${fmt(w.ang)}${w.angFlag==="anom"?' <span class="tag">이상치</span>':w.angFlag==="span"?' <span class="tag">2주 평균</span>':w.angFlag==="est"?' <span class="tag">추정</span>':""}</td><td class="n">${fmt(w.rfn)}${w.rfBad?' <span class="tag">앱 장애</span>':""}</td><td class="n">${fmt(w.rfd)}</td><td class="n">${fmt(w.rfnS)}</td><td class="n">${fmt(w.rfdS)}</td><td class="n">${w.wx?deg(w.wx[0]):"–"}</td><td class="n">${w.wx?w.wx[2]:"–"}</td><td class="n">${w.wx&&w.wx[3]>=0.1?w.wx[3].toFixed(1):"–"}</td></tr>`});
+  let h=`<thead><tr><th>주(월)</th><th>시즌</th><th class="n">CMNP 접수</th><th class="n">CMNP 완료</th><th class="n">엔젤 인입</th><th class="n">리턴프리 심야</th><th class="n">리턴프리 낮</th><th class="n">심야 매출(천원)</th><th class="n">낮 매출(천원)</th><th class="n">왕복 거래액(천원)</th><th class="n">편도 거래액(천원)</th><th class="n">최저기온</th><th class="n">강수(mm)</th><th class="n">적설(cm)</th></tr></thead><tbody>`;
+  W.forEach(w=>{h+=`<tr><td class="n" style="text-align:left">${iso(w.mon)}${w.cmWk?` <span class="tag">CMNP WK${w.cmWk}</span>`:""}</td><td>${w.ev?w.ev.name:w.pre?w.pre.name+" 직전":""}</td><td class="n">${fmt(w.cr)}</td><td class="n">${fmt(w.cc)}</td><td class="n">${fmt(w.ang)}${w.angFlag==="anom"?' <span class="tag">이상치</span>':w.angFlag==="span"?' <span class="tag">2주 평균</span>':w.angFlag==="est"?' <span class="tag">추정</span>':""}</td><td class="n">${fmt(w.rfn)}${w.rfBad?' <span class="tag">앱 장애</span>':""}</td><td class="n">${fmt(w.rfd)}</td><td class="n">${fmt(w.rfnS)}</td><td class="n">${fmt(w.rfdS)}</td><td class="n">${fmt(w.hrt)}</td><td class="n">${fmt(w.how)}</td><td class="n">${w.wx?deg(w.wx[0]):"–"}</td><td class="n">${w.wx?w.wx[2]:"–"}</td><td class="n">${w.wx&&w.wx[3]>=0.1?w.wx[3].toFixed(1):"–"}</td></tr>`});
   document.getElementById("tRaw").innerHTML=h+"</tbody>";
 }
 
-document.getElementById("cal").innerHTML=UPCOMING.filter(u=>!u.end||Date.parse(u.end)+DAY>Date.now()).map(u=>`<div class="ev"><b>${u.name}</b><span class="d">${u.d}</span><p>${u.note}</p></div>`).join("");
+document.getElementById("leadW").textContent=LEAD_WEEKS;
+document.getElementById("cal").innerHTML=UPCOMING.filter(u=>!u.end||Date.parse(u.end)+DAY>Date.now()).map(u=>{
+  let due=u.due?`대응 시점 <span>${u.due}</span>`:"";
+  if(u.early){const d=new Date(Date.parse(u.start)-LEAD_WEEKS*7*DAY);const wd="일월화수목금토"[d.getUTCDay()];due=`얼리버드 오픈 기한 <span>${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}-${String(d.getUTCDate()).padStart(2,"0")}(${wd})</span>`;}
+  return `<div class="ev"><b>${u.name}</b><span class="d">${u.d}</span><dl><dt>작년 영향</dt><dd>${u.impact}</dd><dt>혼용 차량 대응</dt><dd>${u.action}</dd></dl><div class="due">${due}</div></div>`}).join("");
 const lagOn=document.getElementById("lagOn"),lagOff=document.getElementById("lagOff");
 function setLag(v){LAG=v;lagOn.setAttribute("aria-pressed",v);lagOff.setAttribute("aria-pressed",!v);render()}
 lagOn.onclick=()=>setLag(true); lagOff.onclick=()=>setLag(false);
